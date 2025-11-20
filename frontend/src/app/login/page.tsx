@@ -40,8 +40,8 @@ export default function Login() {
       localStorage.setItem("accessToken", accessToken);
       localStorage.setItem("refreshToken", refreshToken);
 
-      // Redirect to dashboard or home
-      router.push("/");
+      // Redirect to dashboard
+      router.push("/dashboard");
     } catch (err: any) {
       setError(err.response?.data?.message || "Login failed");
     } finally {
