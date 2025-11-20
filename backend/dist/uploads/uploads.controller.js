@@ -21,6 +21,19 @@ const jwt_auth_guard_1 = require("../auth/guards/jwt-auth.guard");
 const uploads_service_1 = require("./uploads.service");
 let UploadsController = class UploadsController {
     uploadsService;
+    static allowedMimeTypes = [
+        'image/jpeg',
+        'image/png',
+        'image/gif',
+        'image/webp',
+        'application/pdf',
+        'application/msword',
+        'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+        'text/plain',
+        'application/rtf',
+        'image/dicom',
+        'application/dicom',
+    ];
     constructor(uploadsService) {
         this.uploadsService = uploadsService;
     }
@@ -87,7 +100,8 @@ __decorate([
             },
         }),
         fileFilter: (req, file, callback) => {
-            if (!this.uploadsService.validateFileType(file.mimetype)) {
+            if (file &&
+                !UploadsController.allowedMimeTypes.includes(file.mimetype)) {
                 return callback(new common_1.BadRequestException('Invalid file type'), false);
             }
             callback(null, true);
@@ -113,7 +127,8 @@ __decorate([
             },
         }),
         fileFilter: (req, file, callback) => {
-            if (!this.uploadsService.validateFileType(file.mimetype)) {
+            if (file &&
+                !UploadsController.allowedMimeTypes.includes(file.mimetype)) {
                 return callback(new common_1.BadRequestException('Invalid file type'), false);
             }
             callback(null, true);
@@ -140,7 +155,8 @@ __decorate([
             },
         }),
         fileFilter: (req, file, callback) => {
-            if (!this.uploadsService.validateFileType(file.mimetype)) {
+            if (file &&
+                !UploadsController.allowedMimeTypes.includes(file.mimetype)) {
                 return callback(new common_1.BadRequestException('Invalid file type'), false);
             }
             callback(null, true);

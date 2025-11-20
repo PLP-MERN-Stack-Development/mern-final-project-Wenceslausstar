@@ -58,7 +58,7 @@ let NotificationsService = NotificationsService_1 = class NotificationsService {
     twilioClient;
     constructor(configService) {
         this.configService = configService;
-        this.emailTransporter = nodemailer.createTransporter({
+        this.emailTransporter = nodemailer.createTransport({
             host: this.configService.get('EMAIL_HOST'),
             port: this.configService.get('EMAIL_PORT'),
             secure: false,
@@ -69,7 +69,7 @@ let NotificationsService = NotificationsService_1 = class NotificationsService {
         });
         const accountSid = this.configService.get('TWILIO_ACCOUNT_SID');
         const authToken = this.configService.get('TWILIO_AUTH_TOKEN');
-        if (accountSid && authToken) {
+        if (accountSid && authToken && accountSid !== 'your-twilio-account-sid' && authToken !== 'your-twilio-auth-token') {
             this.twilioClient = (0, twilio_1.default)(accountSid, authToken);
         }
     }

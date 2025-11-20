@@ -1,6 +1,7 @@
 import { UploadsService } from './uploads.service';
 export declare class UploadsController {
     private readonly uploadsService;
+    private static readonly allowedMimeTypes;
     constructor(uploadsService: UploadsService);
     uploadSingleFile(file: Express.Multer.File, req: any): Promise<{
         message: string;
