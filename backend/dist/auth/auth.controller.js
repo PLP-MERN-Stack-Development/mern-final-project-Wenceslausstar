@@ -29,8 +29,8 @@ let AuthController = class AuthController {
     async login(loginDto) {
         return this.authService.login(loginDto);
     }
-    async refresh(req) {
-        return this.authService.refreshToken(req.user);
+    async refresh(body) {
+        return this.authService.refreshToken(body.refreshToken);
     }
     getProfile(req) {
         return req.user;
@@ -52,9 +52,8 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "login", null);
 __decorate([
-    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     (0, common_1.Post)('refresh'),
-    __param(0, (0, common_1.Request)()),
+    __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)

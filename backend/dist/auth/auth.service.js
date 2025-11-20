@@ -115,10 +115,23 @@ let AuthService = class AuthService {
             },
         };
     }
-    async refreshToken(user) {
-        const payload = { sub: user._id, email: user.email, role: user.role };
-        const accessToken = this.jwtService.sign(payload);
-        return { accessToken };
+    async refreshToken(refreshToken) {
+        try {
+            const payload = this.jwtService.verify(refreshToken);
+            const user = await this.validateUser(payload.sub);
+            if (!user) {
+                throw new common_1.UnauthorizedException();
+            }
+            const accessToken = this.jwtService.sign({
+                sub: user._id,
+                email: user.email,
+                role: user.role,
+            });
+            return { accessToken };
+        }
+        catch {
+            throw new common_1.UnauthorizedException();
+        }
     }
     async validateUser(userId) {
         return this.userModel.findById(userId);

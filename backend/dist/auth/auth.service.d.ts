@@ -17,7 +17,7 @@ export declare class AuthService {
         refreshToken: string;
         user: any;
     }>;
-    refreshToken(user: any): Promise<{
+    refreshToken(refreshToken: string): Promise<{
         accessToken: string;
     }>;
     validateUser(userId: string): Promise<UserDocument | null>;

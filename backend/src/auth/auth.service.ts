@@ -99,11 +99,22 @@ export class AuthService {
     };
   }
 
-  async refreshToken(user: any): Promise<{ accessToken: string }> {
-    const payload = { sub: user._id, email: user.email, role: user.role };
-    const accessToken = this.jwtService.sign(payload);
-
-    return { accessToken };
+  async refreshToken(refreshToken: string): Promise<{ accessToken: string }> {
+    try {
+      const payload = this.jwtService.verify(refreshToken);
+      const user = await this.validateUser(payload.sub);
+      if (!user) {
+        throw new UnauthorizedException();
+      }
+      const accessToken = this.jwtService.sign({
+        sub: user._id,
+        email: user.email,
+        role: user.role,
+      });
+      return { accessToken };
+    } catch {
+      throw new UnauthorizedException();
+    }
   }
 
   async validateUser(userId: string): Promise<UserDocument | null> {

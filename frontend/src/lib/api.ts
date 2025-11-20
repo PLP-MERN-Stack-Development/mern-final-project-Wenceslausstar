@@ -1,17 +1,18 @@
-import axios from 'axios';
+import axios from "axios";
+import { useAuthStore } from "@/lib/store/auth";
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3002";
 
 export const api = axios.create({
   baseURL: API_BASE_URL,
   headers: {
-    'Content-Type': 'application/json',
+    "Content-Type": "application/json",
   },
 });
 
 // Request interceptor to add auth token
 api.interceptors.request.use((config) => {
-  const token = localStorage.getItem('accessToken');
+  const token = localStorage.getItem("accessToken");
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
@@ -24,27 +25,30 @@ api.interceptors.response.use(
   async (error) => {
     if (error.response?.status === 401) {
       // Token expired, try to refresh
-      const refreshToken = localStorage.getItem('refreshToken');
+      const refreshToken = localStorage.getItem("refreshToken");
       if (refreshToken) {
         try {
           const response = await axios.post(`${API_BASE_URL}/auth/refresh`, {
             refreshToken,
           });
           const { accessToken } = response.data;
-          localStorage.setItem('accessToken', accessToken);
+          localStorage.setItem("accessToken", accessToken);
+          // Update store
+          useAuthStore.getState().setTokens(accessToken, refreshToken);
           // Retry the original request
           error.config.headers.Authorization = `Bearer ${accessToken}`;
           return axios(error.config);
         } catch (refreshError) {
           // Refresh failed, redirect to login
-          localStorage.removeItem('accessToken');
-          localStorage.removeItem('refreshToken');
-          window.location.href = '/login';
+          localStorage.removeItem("accessToken");
+          localStorage.removeItem("refreshToken");
+          useAuthStore.getState().logout();
+          window.location.href = "/login";
         }
       }
     }
     return Promise.reject(error);
-  },
+  }
 );
 
 export default api;

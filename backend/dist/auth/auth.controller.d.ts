@@ -14,7 +14,9 @@ export declare class AuthController {
         refreshToken: string;
         user: any;
     }>;
-    refresh(req: any): Promise<{
+    refresh(body: {
+        refreshToken: string;
+    }): Promise<{
         accessToken: string;
     }>;
     getProfile(req: any): any;
